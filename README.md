@@ -21,3 +21,37 @@ Streamlit (Frontend)
 hashlib (SHA-256 hashing)
 
 Custom Blockchain implementation
+
+**Usage**
+
+Add Content
+
+Choose Text or File
+
+Enter text or upload a file
+
+Click Add to Blockchain
+
+Verify Content
+
+Provide the same text or file
+
+Click Verify
+
+✅ “Content is Authentic” if matched
+
+❌ “Content has been Tampered” if unmatched
+
+View Blockchain
+
+Check all blocks with index, timestamp, content hash, and previous hash
+
+**Future Improvements**
+
+Preview uploaded images in the app
+
+Export blockchain data as JSON
+
+Add Proof-of-Work for security
+
+Visual blockchain diagram for clarity
