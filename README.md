@@ -2,7 +2,7 @@
 
 A Python + Streamlit app for verifying the authenticity of digital content (text and images) using blockchain technology. Each piece of content is hashed and stored on a blockchain to ensure it hasn’t been tampered with.
 
-Features
+**Features**
 
 Add Content – Submit text or image files to the blockchain.
 
@@ -12,7 +12,7 @@ View Blockchain – Explore all blocks with hashes, timestamps, and previous has
 
 Interactive Frontend – Built with Streamlit for easy usage.
 
-Tech Stack
+**Tech Stack**
 
 Python 3.11
 
