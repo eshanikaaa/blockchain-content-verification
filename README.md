@@ -55,3 +55,7 @@ Export blockchain data as JSON
 Add Proof-of-Work for security
 
 Visual blockchain diagram for clarity
+
+## 🔗 Live Demo
+You can access the app directly here: [Open Blockchain Content Verification](http://blockchain-content-verification-gwfiacez9bmqekyw6exy4d.streamlit.app/)
+
