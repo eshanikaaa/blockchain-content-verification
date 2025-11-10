@@ -1,8 +1,10 @@
 # app.py
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from blockchain import Blockchain
 
 app = Flask(__name__)
+CORS(app)
 
 blockchain = Blockchain()
 
