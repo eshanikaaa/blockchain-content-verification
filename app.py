@@ -1,76 +1,57 @@
-import streamlit as st
+# app.py
+from flask import Flask, request, jsonify
 from blockchain import Blockchain
-import hashlib
 
-# Initialize blockchain
-if "blockchain" not in st.session_state:
-    st.session_state.blockchain = Blockchain()
+app = Flask(__name__)
 
-bc = st.session_state.blockchain
+blockchain = Blockchain()
 
-st.title("📄 Content Verification using Blockchain")
 
-menu = ["Add Content", "Verify Content", "View Blockchain"]
-choice = st.sidebar.selectbox("Menu", menu)
+@app.route('/', methods=['GET'])
+def welcome():
+    return jsonify({"message": "Blockchain backend is running"}), 200
 
-def get_file_hash(file):
-    data = file.read()
-    return hashlib.sha256(data).hexdigest()
 
-def get_text_hash(text):
-    return hashlib.sha256(text.encode()).hexdigest()
+@app.route('/chain', methods=['GET'])
+def get_chain():
+    return jsonify(blockchain.get_chain()), 200
 
-if choice == "Add Content":
-    st.header("Add New Content")
-    content_type = st.radio("Content Type", ["Text", "File (Image/Text)"])
 
-    if content_type == "Text":
-        text = st.text_area("Enter text/article here")
-        if st.button("Add Text to Blockchain"):
-            if text.strip():
-                content_hash = get_text_hash(text)
-                block = bc.add_block(content_hash)
-                st.success(f"Text added to blockchain! Block index: {block.index}")
-            else:
-                st.error("Please enter some text.")
+@app.route('/add_content', methods=['POST'])
+def add_content():
+    data = request.get_json()
+    if not data or "content" not in data:
+        return jsonify({"error": "Missing 'content' in request body"}), 400
 
-    elif content_type == "File (Image/Text)":
-        uploaded_file = st.file_uploader("Upload a file", type=["txt", "png", "jpg", "jpeg"])
-        if uploaded_file:
-            if st.button("Add File to Blockchain"):
-                content_hash = get_file_hash(uploaded_file)
-                block = bc.add_block(content_hash)
-                st.success(f"File added to blockchain! Block index: {block.index}")
+    metadata = data.get("metadata", {})
+    response = blockchain.add_content(data["content"], metadata)
+    return jsonify(response), 201
 
-elif choice == "Verify Content":
-    st.header("Verify Content Authenticity")
-    content_type = st.radio("Content Type", ["Text", "File (Image/Text)"])
 
-    if content_type == "Text":
-        text = st.text_area("Enter text/article here to verify")
-        if st.button("Verify Text"):
-            if text.strip():
-                content_hash = get_text_hash(text)
-                matches = [b for b in bc.chain if b.content_hash == content_hash]
-                if matches:
-                    st.success("✅ Content is Authentic!")
-                else:
-                    st.error("❌ Content has been Tampered or not added yet.")
-            else:
-                st.error("Please enter some text.")
+@app.route('/mine', methods=['GET'])
+def mine_block():
+    block = blockchain.mine_block()
+    return jsonify(block), 200
 
-    elif content_type == "File (Image/Text)":
-        uploaded_file = st.file_uploader("Upload a file to verify", type=["txt", "png", "jpg", "jpeg"])
-        if uploaded_file:
-            if st.button("Verify File"):
-                content_hash = get_file_hash(uploaded_file)
-                matches = [b for b in bc.chain if b.content_hash == content_hash]
-                if matches:
-                    st.success("✅ Content is Authentic!")
-                else:
-                    st.error("❌ Content has been Tampered or not added yet.")
 
-elif choice == "View Blockchain":
-    st.header("Blockchain Data")
-    chain_data = bc.get_chain_data()
-    st.write(chain_data)
+@app.route('/verify', methods=['POST'])
+def verify_content():
+    data = request.get_json()
+    if not data or not ("content" in data or "content_hash" in data):
+        return jsonify({"error": "Provide 'content' or 'content_hash'"}), 400
+
+    content = data.get("content")
+    content_hash = data.get("content_hash")
+    result = blockchain.verify_content(content=content, content_hash=content_hash)
+    return jsonify(result), 200
+
+
+@app.route('/is_valid', methods=['GET'])
+def is_valid():
+    valid = blockchain.is_chain_valid()
+    return jsonify({"valid": valid}), 200
+
+
+if __name__ == "__main__":
+    app.run()
+

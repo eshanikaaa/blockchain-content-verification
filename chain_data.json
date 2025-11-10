@@ -1,0 +1,12 @@
+{
+  "chain": [
+    {
+      "data": [],
+      "index": 1,
+      "previous_hash": "0",
+      "proof": 1,
+      "timestamp": 1762752294.373931
+    }
+  ],
+  "pending_data": []
+}
